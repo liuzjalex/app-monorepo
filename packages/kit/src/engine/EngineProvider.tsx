@@ -1,4 +1,4 @@
-import { Engine } from '../../../../../engine/src';
+import { Engine } from '../../../engine/src';
 
 const engine = new Engine();
 

@@ -1,14 +1,17 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 import { useIntl } from 'react-intl';
 
-import { Box, Form, Modal, useForm } from '@onekeyhq/components';
+import { Box, Button, Form, Modal, useForm } from '@onekeyhq/components';
+import { SelectItem } from '@onekeyhq/components/src/Select';
 import {
   CreateAccountModalRoutes,
   CreateAccountRoutesParams,
   ModalRoutes,
 } from '@onekeyhq/kit/src/routes';
+
+import engine from '../../../engine/EngineProvider';
 
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -24,8 +27,44 @@ type PrivateKeyFormValues = {
 
 const WatchedAccount: FC = () => {
   const intl = useIntl();
-  const { control } = useForm<PrivateKeyFormValues>();
+  const { control, handleSubmit } = useForm<PrivateKeyFormValues>();
   const navigation = useNavigation<NavigationProps>();
+  const [networkOptions, setNetworkOptions] = useState<SelectItem[]>([]);
+
+  const loadNetWork = async () => {
+    const tempNetworkOptions: SelectItem[] = [];
+
+    const chainNetworks = await engine.listNetworks();
+    chainNetworks.forEach((chains, key) => {
+      tempNetworkOptions.push({
+        label: key.toUpperCase(),
+        value: key,
+      });
+    });
+
+    setNetworkOptions(tempNetworkOptions);
+  };
+
+  const onSubmit = (data: PrivateKeyFormValues) => {
+    console.log(data);
+    engine
+      .addWatchingAccount(
+        data.network ?? 'evm',
+        data.address ?? 0x3b484b82567a09e2588a13d54d032153f0c0aee0,
+        data.name ?? 'test01',
+      )
+      .then((account) => {
+        console.log('添加账户成功', JSON.stringify(account));
+      })
+      .catch((e) => {
+        console.log('添加账户失败', e);
+      });
+  };
+
+  useEffect(() => {
+    loadNetWork();
+  }, []);
+
   return (
     <Modal
       header={intl.formatMessage({ id: 'action__add_account' })}
@@ -53,7 +92,7 @@ const WatchedAccount: FC = () => {
                 helpText={intl.formatMessage({
                   id: 'form__network_helperText',
                 })}
-                defaultValue="https://rpc.onekey.so/eth"
+                defaultValue="evm"
                 formControlProps={{ zIndex: 10 }}
               >
                 <Form.Select
@@ -66,20 +105,7 @@ const WatchedAccount: FC = () => {
                   triggerProps={{
                     py: 2,
                   }}
-                  options={[
-                    {
-                      label: 'https://google.com',
-                      value: 'https://google.com',
-                    },
-                    {
-                      label: 'https://rpc.onekey.so/eth',
-                      value: 'https://rpc.onekey.so/eth',
-                    },
-                    {
-                      label: 'https://baidu.com',
-                      value: 'https://baidu.com',
-                    },
-                  ]}
+                  options={networkOptions}
                 />
               </Form.Item>
               <Form.Item
@@ -99,6 +125,11 @@ const WatchedAccount: FC = () => {
               >
                 <Form.Textarea />
               </Form.Item>
+              <Button onPress={handleSubmit(onSubmit)} type="primary">
+                {intl.formatMessage({
+                  id: 'action__import',
+                })}
+              </Button>
             </Form>
           </Box>
         ),

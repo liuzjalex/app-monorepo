@@ -1,6 +1,6 @@
-import { BigNumber } from './BigNumber';
-import engine from './EngineProvider';
-import { AssetToken, WalletAsset } from './WalletAsset';
+import engine from '../../../engine/EngineProvider';
+import { BigNumber } from '../../../types/BigNumber';
+import { AssetToken, WalletAsset } from '../../../types/WalletAsset';
 
 export async function loadAssets(accountId: string, networkId: string) {
   const account = await engine.getAccount(accountId, networkId);

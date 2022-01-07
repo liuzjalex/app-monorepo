@@ -22,13 +22,13 @@ import {
 
 import useInterval from '../../../hooks/useInterval';
 import { updateTotalBalance } from '../../../store/reducers/account';
+import { AssetToken, WalletAsset } from '../../../types/WalletAsset';
 import {
   calculateTotalAmount,
   loadAssets,
   loadAssetsAmount,
   loadAssetsFiatAmount,
 } from '../temp/AccountManager';
-import { AssetToken, WalletAsset } from '../temp/WalletAsset';
 
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -72,10 +72,7 @@ const AssetsList = () => {
       .then(async (accountAssets) => {
         await loadAssetsAmount(accountId, networkId, accountAssets);
         loadAssetsFiatAmount(networkId, accountAssets);
-        console.log(
-          '=== LoadAssetsAmount ===:\n',
-          JSON.stringify(accountAssets),
-        );
+
         setAssets(accountAssets);
 
         const totalAmount = calculateTotalAmount(accountAssets);
