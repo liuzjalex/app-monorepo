@@ -1132,6 +1132,7 @@ class Engine {
     networkId: string;
     accountId: string;
   }) {
+    console.log('signAndSendEncodedTx', encodedTx);
     const vault = await this.getVault({
       accountId,
       networkId,
@@ -1334,6 +1335,8 @@ class Engine {
           rawTx,
         },
       );
+      //0x1F803cc4fc6f21ce00F0c5f5932c9800045d25F0
+      console.log(historyId, networkId, accountId, tokenIdOnNetwork, to,value,rawTx)
       return { txid, success: true };
     } catch (e) {
       console.error(e);
@@ -1430,6 +1433,11 @@ class Engine {
   // TODO: sign & broadcast.
   // signTransaction
   // broadcastRawTransaction
+  @backgroundMethod()
+  async t() {
+    const localHistory = await this.getHistory('evm--137', '');
+    console.log(localHistory[0]);
+  }
 
   async getHistory(
     networkId: string,
