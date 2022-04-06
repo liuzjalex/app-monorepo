@@ -1,5 +1,6 @@
-import { HistoryEntry, HistoryEntryParams } from './entry';
-import { HistoryEntryFactory } from './entry/factory';
+import { HistoryDecoder, HistoryEntryParams } from './decoder';
+import { HistoryDecoderFactory } from './decoder/factory';
+import { HistoryEntry } from './entry';
 
 class HistoryRecorder {
   static record(params: HistoryEntryParams) {
@@ -17,7 +18,10 @@ class HistoryRecorder {
   }
 
   private static _createEntry(params: HistoryEntryParams): HistoryEntry {
-    return HistoryEntryFactory.entryWithParams(params);
+    const decoder = HistoryDecoderFactory.decoderWithNetworkId(
+      params.networkId,
+    );
+    return decoder.decode(params);
   }
 }
 
