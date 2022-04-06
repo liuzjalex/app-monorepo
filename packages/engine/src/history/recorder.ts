@@ -1,14 +1,14 @@
-import { HistoryDecoder, HistoryEntryParams } from './decoder';
+import { HistoryDecoder, HistoryDecoderParams } from './decoder';
 import { HistoryDecoderFactory } from './decoder/factory';
 import { HistoryEntry } from './entry';
 
 class HistoryRecorder {
-  static record(params: HistoryEntryParams) {
+  static record(params: HistoryDecoderParams) {
     this.checkParams(params);
     const entry = this._createEntry(params);
   }
 
-  static checkParams({ id }: HistoryEntryParams) {
+  static checkParams({ id }: HistoryDecoderParams) {
     const isValidId = /^(\w+--){2}\w+$/.test(id);
     if (!isValidId) {
       throw new Error(
@@ -17,13 +17,11 @@ class HistoryRecorder {
     }
   }
 
-  private static _createEntry(params: HistoryEntryParams): HistoryEntry {
-    const decoder = HistoryDecoderFactory.decoderWithNetworkId(
-      params.networkId,
-    );
+  private static _createEntry(params: HistoryDecoderParams): HistoryEntry {
+    const decoder = HistoryDecoderFactory.decoderWithParams(params);
     return decoder.decode(params);
   }
 }
 
 export { HistoryRecorder };
-export type { HistoryEntryParams };
+export type { HistoryDecoderParams };

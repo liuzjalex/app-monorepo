@@ -1,19 +1,20 @@
-import { HistoryDecoder } from '.';
+import { HistoryDecoder, HistoryDecoderParams } from '.';
 
 import { IMPL_EVM } from '../../constants';
 import { getImplFromNetworkId } from '../../managers/network';
 
-import { EVMHistoryDecoder } from './evm';
+import { EVMHistoryDecoder } from './evm/evm';
 
 class HistoryDecoderFactory {
-  static decoderWithNetworkId(networkId: string): HistoryDecoder {
+  static decoderWithParams(params: HistoryDecoderParams): HistoryDecoder {
+    const { networkId } = params;
     const impl = getImplFromNetworkId(networkId);
 
     let deocder: HistoryDecoder;
 
     switch (impl) {
       case IMPL_EVM: {
-        deocder = new EVMHistoryDecoder();
+        deocder = new EVMHistoryDecoder(params);
         break;
       }
 

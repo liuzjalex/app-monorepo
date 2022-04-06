@@ -1,7 +1,7 @@
 import { HistoryEntry } from '../../types/history';
 import { HistoryItem } from '../entry';
 
-type HistoryEntryParams = {
+type HistoryDecoderParams = {
   id: string;
   networkId: string;
   accountId: string;
@@ -12,9 +12,15 @@ type HistoryEntryParams = {
   message?: string;
 };
 
-interface HistoryDecoder {
-  decode(params: HistoryEntry): HistoryItem;
+abstract class HistoryDecoder {
+  protected readonly params: HistoryDecoderParams;
+
+  constructor(params: HistoryDecoderParams) {
+    this.params = params;
+  }
+
+  abstract decode(entry: HistoryEntry): HistoryItem;
 }
 
-export type { HistoryDecoder };
-export type { HistoryEntryParams };
+export { HistoryDecoder };
+export type { HistoryDecoderParams };

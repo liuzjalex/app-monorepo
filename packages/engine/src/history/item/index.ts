@@ -42,6 +42,7 @@ interface HistoryItemPayloadSign extends HistoryItemPayload {
   type: 'sign';
   message: string;
 }
+
 class HistoryItem {
   id!: string;
 
