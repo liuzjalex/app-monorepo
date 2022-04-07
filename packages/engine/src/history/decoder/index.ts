@@ -4,7 +4,6 @@ import { HistoryItem } from '../entry';
 type HistoryDecoderParams = {
   id: string;
   networkId: string;
-  accountId: string;
   type: 'transaction' | 'sign';
   rawTx: string;
   tx?: any;

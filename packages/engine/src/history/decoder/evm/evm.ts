@@ -65,6 +65,26 @@ class EVMHistoryDecoder extends HistoryDecoder {
     };
   }
 
+  private static fillItemBuilder(
+    tx: ethers.Transaction,
+    itemBuilder: EVMDecodedItem,
+  ) {
+    const { gasLimit, gasPrice, nonce, value, from, to, hash, type, chainId } =
+      tx;
+
+    itemBuilder.hash = hash;
+    itemBuilder.nonce = nonce;
+    itemBuilder.from = from;
+    itemBuilder.to = to;
+    itemBuilder.value = value.toString();
+    itemBuilder.gasPrice = gasPrice?.toString();
+    itemBuilder.gasLimit = gasLimit.toString();
+    itemBuilder.feeType = type;
+    itemBuilder.chainId = chainId;
+
+    itemBuilder.amount = ethers.utils.formatEther(value);
+  }
+  
   static parseTxType(tx: ethers.Transaction): HistoryTxType {
     const { gasLimit, data } = tx;
 
