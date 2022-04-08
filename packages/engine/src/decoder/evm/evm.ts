@@ -1,5 +1,8 @@
 import { ethers } from '@onekeyfe/blockchain-libs';
 
+import { Engine } from '../..';
+import { Token } from '../../types/token';
+
 import { ABI } from './abi';
 
 enum EVMTxType {
@@ -8,21 +11,141 @@ enum EVMTxType {
 
   // Contract interaction
   TRANSACTION = 'transaction',
+
+  // ERC20
   TOKEN_TRANSFER = 'token_transfer',
   APPROVE = 'approve',
 }
 
-interface EVMDecodedItem {
+interface EVMBaseDecodedItem {
   txType: EVMTxType;
   tx: ethers.Transaction;
   txDesc?: ethers.utils.TransactionDescription;
+}
 
-  parse?: (a: number) => any;
+interface EVMDecodedItemERC20Transfer {
+  type: 'transfer';
+  token: Token;
+  amount: string;
+  value: string;
+  recipent: string;
+}
+
+interface EVMDecodedItemERC20Approve {
+  type: 'approve';
+  token: Token;
+  spender: string;
+  amount: string;
+  value: string;
+}
+
+interface EVMDecodedItem extends EVMBaseDecodedItem {
+  symbol: string;
+  amount: string; // in ether
+  value: string; // in wei
+  isERC20: boolean;
+
+  from: string;
+  to: string;
+  hash: string;
+  is1559: boolean;
+  gasLimit: string;
+  gasPrice: string;
+  maxPriorityFeePerGas: string;
+  maxFeePerGas: string;
+
+  contranctCallInfo?: {
+    contranctAddress: string;
+    functionName: string;
+    functionSignature: string;
+    args: any;
+  };
+
+  info: EVMDecodedItemERC20Transfer | EVMDecodedItemERC20Approve | null;
 }
 
 class EVMTxDecoder {
-  static decode(rawTx: string): EVMDecodedItem {
-    const itemBuilder = {} as EVMDecodedItem;
+  static async decode(rawTx: string, engine: Engine): Promise<EVMDecodedItem> {
+    const { txType, tx, txDesc } = this.staticDecode(rawTx);
+    const itemBuilder = { txType, tx, txDesc } as EVMDecodedItem;
+
+    const networkId = `evm--${tx.chainId}`;
+    itemBuilder.symbol = (await engine.getNetwork(networkId)).shortName;
+    itemBuilder.amount = ethers.utils.formatEther(tx.value);
+    itemBuilder.isERC20 =
+      txType === EVMTxType.TOKEN_TRANSFER || txType === EVMTxType.APPROVE;
+
+    this.fillTxInfo(itemBuilder, tx);
+
+    if (txDesc) {
+      itemBuilder.contranctCallInfo = {
+        contranctAddress: tx.to ?? '',
+        functionName: txDesc.name,
+        functionSignature: txDesc.signature,
+        args: txDesc.args,
+      };
+    }
+
+    let infoBuilder:
+      | EVMDecodedItemERC20Transfer
+      | EVMDecodedItemERC20Approve
+      | null;
+
+    if (itemBuilder.isERC20) {
+      const token = await engine.getOrAddToken(networkId, itemBuilder.to);
+      if (!token) {
+        // TODO: fetch token info onchain
+        throw new Error(`Token ${itemBuilder.to} not found`);
+      }
+      switch (txType) {
+        case EVMTxType.TOKEN_TRANSFER: {
+          // transfer(address _to, uint256 _value)
+          const recipent = txDesc?.args[0] as string;
+          const value = txDesc?.args[1] as string;
+          const amount = ethers.utils.formatUnits(
+            txDesc?.args[1],
+            token.decimals,
+          );
+          infoBuilder = {
+            type: 'transfer',
+            value,
+            amount,
+            recipent,
+            token,
+          } as EVMDecodedItemERC20Transfer;
+          break;
+        }
+        case EVMTxType.APPROVE: {
+          // approve(address _spender, uint256 _value)
+          const spender = txDesc?.args[0] as string;
+          const value = txDesc?.args[1] as string;
+          const amount = ethers.utils.formatUnits(
+            txDesc?.args[1],
+            token.decimals,
+          );
+          infoBuilder = {
+            type: 'approve',
+            spender,
+            amount,
+            value,
+            token,
+          } as EVMDecodedItemERC20Approve;
+          break;
+        }
+        default: {
+          throw new Error(
+            `EVMTxDecoder: not implemented for txType: ${txType}`,
+          );
+        }
+      }
+      itemBuilder.info = infoBuilder;
+    }
+
+    return itemBuilder;
+  }
+
+  static staticDecode(rawTx: string): EVMBaseDecodedItem {
+    const itemBuilder = {} as EVMBaseDecodedItem;
 
     const tx = ethers.utils.parseTransaction(rawTx);
     itemBuilder.tx = tx;
@@ -41,12 +164,23 @@ class EVMTxDecoder {
     }
 
     itemBuilder.txType = EVMTxType.TRANSACTION;
-    itemBuilder.parse = this.parse.bind(itemBuilder);
     return itemBuilder;
   }
 
-  static parse(a: number): any {
-    return a;
+  private static fillTxInfo(
+    itemBuilder: EVMDecodedItem,
+    tx: ethers.Transaction,
+  ) {
+    itemBuilder.value = tx.value.toString();
+    itemBuilder.from = tx.from ?? '';
+    itemBuilder.to = tx.to ?? '';
+    itemBuilder.hash = tx.hash ?? '';
+    itemBuilder.is1559 = tx.type === 2;
+    itemBuilder.gasLimit = tx.gasLimit.toString();
+    itemBuilder.gasPrice = tx.gasPrice?.toString() ?? '';
+    itemBuilder.maxPriorityFeePerGas =
+      tx.maxPriorityFeePerGas?.toString() ?? '';
+    itemBuilder.maxFeePerGas = tx.maxFeePerGas?.toString() ?? '';
   }
 
   private static parseERC20(
