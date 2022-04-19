@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useIsVerticalLayout } from '@onekeyhq/components';
 import { Transaction } from '@onekeyhq/engine/src/types/covalent';
-import TransactionDetails from '@onekeyhq/kit/src/views/TransactionDetails';
+import TxDetail from '@onekeyhq/kit/src/views/TxDetail';
 
 import createStackNavigator from './createStackNavigator';
 
@@ -23,7 +23,7 @@ const TransactionDetailNavigator =
 const modalRoutes = [
   {
     name: TransactionDetailModalRoutes.TransactionDetailModal,
-    component: TransactionDetails,
+    component: TxDetail,
   },
 ];
 
