@@ -215,6 +215,9 @@ const TransactionConfirm = () => {
     decodedTx.txType === EVMDecodedTxType.NATIVE_TRANSFER ||
     decodedTx.txType === EVMDecodedTxType.TOKEN_TRANSFER
   ) {
+    // if(payload.isCancelTx || payload.isBoostTx){
+    //   sharedProps.feeInfoEditable = true
+    // }
     return (
       <TxConfirmTransfer
         {...sharedProps}

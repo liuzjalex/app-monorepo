@@ -42,7 +42,7 @@ export type ITxConfirmViewProps = ModalProps & {
   feeInfoLoading: boolean;
   feeInfoEditable?: boolean;
   payload?: any | TransferSendParamsPayload;
-  children?: React.ReactElement;
+  children?: React.ReactElement | null;
 };
 
 // TODO rename SendConfirmModalBase
