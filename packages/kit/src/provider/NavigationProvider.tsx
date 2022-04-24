@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createURL } from 'expo-linking';
 
-import { useThemeValue } from '@onekeyhq/components';
+import { Box, useThemeValue } from '@onekeyhq/components';
 import Toast from '@onekeyhq/components/src/Toast/Custom';
 import platformEnv from '@onekeyhq/shared/src/platformEnv';
 
@@ -15,11 +15,13 @@ const NavigationApp = () => {
   const linking = {
     prefixes: [prefix],
   };
-  const enableLinkingRoute =
-    platformEnv.isNative ||
-    platformEnv.isExtensionUiPopup ||
-    platformEnv.isExtensionUiStandaloneWindow ||
-    platformEnv.isDev;
+  let enableLinkingRoute =
+    platformEnv.isDev || platformEnv.isNative || platformEnv.isExtension;
+  // firefox popup window resize issue
+  if (platformEnv.isExtensionUiPopup && platformEnv.isFirefox) {
+    enableLinkingRoute = false;
+  }
+
   const [bgColor, textColor, bgDefault] = useThemeValue([
     'surface-subdued',
     'text-default',
@@ -48,7 +50,17 @@ const NavigationApp = () => {
       >
         <Navigator />
       </NavigationContainer>
-      <Toast bottomOffset={60} />
+      <Box
+        overflow="hidden"
+        pointerEvents="none"
+        position="absolute"
+        top={0}
+        bottom={0}
+        left={0}
+        right={0}
+      >
+        <Toast bottomOffset={60} />
+      </Box>
     </>
   );
 };

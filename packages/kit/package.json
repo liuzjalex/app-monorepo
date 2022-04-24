@@ -4,8 +4,8 @@
   "private": true,
   "main": "src/index.tsx",
   "dependencies": {
-    "@onekeyfe/connect": "8.7.0-extended",
     "@onekeyhq/components": "*",
+    "@onekeyfe/js-sdk": "1.0.2",
     "@reduxjs/toolkit": "^1.6.2",
     "date-fns": "^2.27.0",
     "expo": "^44.0.0",
@@ -23,9 +23,11 @@
     "@types/redux-logger": "^3.0.9",
     "swr": "^1.1.2",
     "@walletconnect/client": "^1.7.5",
-    "fuse.js": "^6.5.3"
+    "fuse.js": "^6.5.3",
+    "json-toy": "^2.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "scripts": {
     "lint": "tsc --noEmit && eslint . --ext .ts,.tsx",
     "clean": "rimraf node_modules"

@@ -1,27 +1,65 @@
+<p align="center">
+<img width="200" src="https://github.com/rayston92/graph_bed/blob/e3b2c938fc5b17d68531f69178908afb16266e6a/img/onekey_logo_badge_border.png?raw=trueg"/>
+</p>
 
+---
 ### 🙋‍♂️ We are hiring many roles (Remote) !
 
-> * Remote (Live anywhere)
-> * Global Pay (Literally)
-> * ESOP (For everybody)
-> * Open Source (As you see)
-> * Awesome Colleagues (Hell Yeah!)
+* Remote (Live anywhere)
+* Global Pay (Literally)
+* ESOP (For everybody)
+* Open Source (As you see)
+* Awesome Colleagues (Hell Yeah!)
 
 [👉 Click here to check all open positions](https://onekeyhq.atlassian.net/wiki/spaces/OC/overview)
-# OneKey App Monorepo [English]
+
+#### 我们正在招人 (远程或深圳) !
+
+* 远程 (生活在哪个城市都可以)
+* 全球一致的薪酬 (真的)
+* 全员持股计划 (每个人都有)
+* 开源 (如你所见)
+* 超级棒的同事 (爽呆!)
+
+[👉 点击此处查看所有职位](https://onekeyhq.atlassian.net/wiki/spaces/OC/overview)
+
+<p align="center">
+<img src="https://github.com/rayston92/graph_bed/blob/master/img/onekey_monorepo_desktop_transparent.png?raw=true"/>
+</p>
+
+
+## Community & Support
+
+- [Community Forum](https://github.com/orgs/OneKeyHQ/discussions). Best for: help with building, discussion about best practices.
+- [GitHub Issues](https://github.com/OneKeyHQ/app-monorepo/issues). Best for: bugs and errors you encounter using OneKey.
+- [Discord](https://discord.gg/onekey). Best for: sharing your ideas and hanging out with the community.
+
+## Status
+
+- [x] Alpha: We are testing Supabase with a closed set of customers
+- [ ] Public: Production-ready
+
+We really need your support, star or watch this repo for latest updates.
+
+<kbd><img src="https://github.com/rayston92/graph_bed/blob/e3b2c938fc5b17d68531f69178908afb16266e6a/img/onekey_monorepo_star.gif?raw=true" alt="Star this repo"/></kbd>
+
+# Getting Onboard [English]
 
 ## 🌍 Environment Configuration
 
-- Install [node.js LTS version  (>= 16)](https://nodejs.org/en/)
-- Install [yarn package management tool](https://yarnpkg.com/)
-- Install [git lfs](https://git-lfs.github.com/) (some binaries are required for pulling and updating)
+1. Install [node.js LTS version  (>= 16)](https://nodejs.org/en/)
+2. Install [yarn package management tool](https://yarnpkg.com/)
+3. Install [git lfs](https://git-lfs.github.com/) (some binaries are required for pulling and updating)
 
 After pulling the latest code via the git command line tool, install the project dependencies in the root directory via the `yarn` command
 
 ```
 # Install all JS dependencies and submodule dependencies
+
 yarn
+
 # Install the expo command line tool globally
+
 npm install -g expo-cli
 ```
 
@@ -59,20 +97,23 @@ Some of the dependencies have native parts, so you need to go into the `packages
 
 Clear the packaging tool cache with the `--reset-cache` command in `yarn native` in the root directory. Also run `yarn clean` in the root directory to clear all dependencies and generated files and then re-run `yarn` to install the dependencies.
 
-# OneKey App Monorepo [Chinese]
+# Getting Onboard [Chinese]
 
 ## 🌍 环境配置
 
-- 安装 [node.js LTS 版本（>= 16）](https://nodejs.org/en/)
-- 安装 [yarn 包管理工具](https://yarnpkg.com/)
-- 安装 [git lfs](https://git-lfs.github.com/)（部分二进制文件在拉取和更新时需要）
+1. 安装 [node.js LTS 版本（>= 16）](https://nodejs.org/en/)
+2. 安装 [yarn 包管理工具](https://yarnpkg.com/)
+3. 安装 [git lfs](https://git-lfs.github.com/)（部分二进制文件在拉取和更新时需要）
 
 通过 git 命令行工具拉取最新的代码之后，通过 `yarn` 命令在根目录安装项目依赖
 
 ```
 # 安装所有 JS 依赖及子模块依赖
+
 yarn
+
 # 全局安装 expo 命令行工具
+
 npm install -g expo-cli
 ```
 

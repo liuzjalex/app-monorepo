@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 import { useIntl } from 'react-intl';
-import { Platform } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 
 import {
   Box,
@@ -49,6 +49,7 @@ const Me = () => {
   const intl = useIntl();
   const connections = useAppSelector((s) => s.dapp.connections);
   const webviewKey = useAppSelector((s) => s.status.webviewGlobalKey);
+  const { width, height } = useWindowDimensions();
 
   const pressableProps = {
     p: '4',
@@ -71,6 +72,30 @@ const Me = () => {
         marginX="auto"
       >
         <VStack space="3">
+          {platformEnv.isDev && (
+            <Pressable
+              p="4"
+              bg="surface-default"
+              borderRadius="12px"
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="space-between"
+              onPress={() => {
+                navigation.navigate(HomeRoutes.Dev, {
+                  screen: StackRoutes.Developer,
+                  params: {
+                    ts: new Date().getTime(),
+                  },
+                });
+              }}
+            >
+              <HStack space="4">
+                <Icon name="DesktopComputerSolid" />
+                <Typography.Body1>Developer</Typography.Body1>
+              </HStack>
+              <Icon name="ChevronRightSolid" size={20} />
+            </Pressable>
+          )}
           {/* <Pressable
             p="4"
             bg="surface-default"
@@ -105,7 +130,9 @@ const Me = () => {
             >
               <HStack space="4">
                 <Icon name="CreditCardOutline" />
-                <Typography.Body1>OneKey Lite</Typography.Body1>
+                <Typography.Body1>
+                  {intl.formatMessage({ id: 'app__hardware_name_onekey_lite' })}
+                </Typography.Body1>
               </HStack>
               <Icon name="ChevronRightSolid" size={20} />
             </Pressable>
@@ -157,6 +184,27 @@ const Me = () => {
               >
                 <Typography.Body1>Logger 设置</Typography.Body1>
               </Pressable>
+              <Pressable
+                {...pressableProps}
+                onPress={() => {
+                  if (platformEnv.isBrowser) {
+                    console.log({
+                      innerWidth: window.innerWidth,
+                      innerHeight: window.innerHeight,
+                      outerWidth: window.outerWidth,
+                      outerHeight: window.outerHeight,
+                      clientWidth: window.document.documentElement.clientWidth,
+                      clientHeight:
+                        window.document.documentElement.clientHeight,
+                    });
+                    // console.log(document.documentElement.outerHTML);
+                  }
+                }}
+              >
+                <Typography.Body1>
+                  useWindowDimensions {width}x{height}
+                </Typography.Body1>
+              </Pressable>
               <HStack>
                 <Input
                   value={uri}
@@ -204,30 +252,6 @@ const Me = () => {
                 <Typography.Body1>Dapp Token Approve</Typography.Body1>
               </Pressable>
             </VStack>
-          )}
-          {platformEnv.isDev && (
-            <Pressable
-              p="4"
-              bg="surface-default"
-              borderRadius="12px"
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="space-between"
-              onPress={() => {
-                navigation.navigate(HomeRoutes.Dev, {
-                  screen: StackRoutes.Developer,
-                  params: {
-                    ts: new Date().getTime(),
-                  },
-                });
-              }}
-            >
-              <HStack space="4">
-                <Icon name="DesktopComputerSolid" />
-                <Typography.Body1>Developer</Typography.Body1>
-              </HStack>
-              <Icon name="ChevronRightSolid" size={20} />
-            </Pressable>
           )}
         </VStack>
       </Box>

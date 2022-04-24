@@ -36,7 +36,10 @@ import {
   SendRoutesParams,
   TransferSendParamsPayload,
 } from './types';
-import { useFeeInfoPayload } from './useFeeInfoPayload';
+import {
+  FEE_INFO_POLLING_INTERVAL,
+  useFeeInfoPayload,
+} from './useFeeInfoPayload';
 
 type NavigationProps = NavigationProp<SendRoutesParams, SendRoutes.SendConfirm>;
 type RouteProps = RouteProp<SendRoutesParams, SendRoutes.SendConfirm>;
@@ -80,6 +83,7 @@ const TransactionConfirm = () => {
     closeOnError: true,
   });
   const useFeeInTx = !isFromDapp;
+  const feeInfoEditable = !useFeeInTx;
 
   let payload = params.payload as TransferSendParamsPayload;
   if (payload) {
@@ -93,6 +97,7 @@ const TransactionConfirm = () => {
   const { feeInfoPayload, feeInfoLoading } = useFeeInfoPayload({
     encodedTx,
     useFeeInTx,
+    pollingInterval: feeInfoEditable ? FEE_INFO_POLLING_INTERVAL : 0,
   });
 
   useEffect(() => {
@@ -118,6 +123,7 @@ const TransactionConfirm = () => {
           contract: payload.token?.idOnNetwork || '',
           target: payload.to,
           value: payload.value,
+          // TODO add ref
           rawTx: tx.rawTx,
         },
       });
@@ -163,6 +169,9 @@ const TransactionConfirm = () => {
           await dappApprove.resolve({
             result: tx.txid,
           });
+          if (params.onSuccess) {
+            params.onSuccess(tx);
+          }
           setTimeout(() => close(), 0);
         },
       });
@@ -185,7 +194,7 @@ const TransactionConfirm = () => {
     onEncodedTxUpdate: (tx) => setEncodedTx(tx),
     feeInfoPayload,
     feeInfoLoading,
-    feeInfoEditable: !useFeeInTx,
+    feeInfoEditable,
     payload,
     handleConfirm,
     onSecondaryActionPress: ({ close }) => {

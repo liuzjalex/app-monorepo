@@ -18,6 +18,27 @@ function normalizeConfig({ platform, config }) {
         'react-native-restart': fullPath(
           './module-resolver/react-native-restart-mock',
         ),
+        'react-native-fast-image': fullPath(
+          './module-resolver/react-native-fast-image-mock',
+        ),
+      },
+    };
+  }
+  if (platform === developmentConsts.platforms.web) {
+    moduleResolver = {
+      alias: {
+        'react-native-fast-image': fullPath(
+          './module-resolver/react-native-fast-image-mock',
+        ),
+      },
+    };
+  }
+  if (platform === developmentConsts.platforms.desktop) {
+    moduleResolver = {
+      alias: {
+        'react-native-fast-image': fullPath(
+          './module-resolver/react-native-fast-image-mock',
+        ),
       },
     };
   }
@@ -25,7 +46,7 @@ function normalizeConfig({ platform, config }) {
     moduleResolver = {
       root: ['./'],
       alias: {
-        '@onekeyfe/connect': './src/public/static/connect/index.js',
+        '@onekeyfe/js-sdk': './src/public/static/js-sdk',
       },
     };
   }

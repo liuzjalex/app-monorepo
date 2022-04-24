@@ -7,10 +7,10 @@ import { SWRConfig } from 'swr';
 
 import { Box } from '@onekeyhq/components';
 import useRemoteConsole from '@onekeyhq/remote-console/src/useRemoteConsole';
-import debugLogger from '@onekeyhq/shared/src/logger/debugLogger';
 
 import backgroundApiProxy from '../background/instance/backgroundApiProxy';
 import { waitForDataLoaded } from '../background/utils';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import store from '../store';
 
 import EngineApp from './EngineProvider';
@@ -35,7 +35,7 @@ function WaitBackgroundReady({
         data: async () => {
           const result = await backgroundApiProxy.getState();
 
-          if (result && result.bootstrapped && debugLogger.debug) {
+          if (result && result.bootstrapped) {
             store.dispatch({
               // TODO use consts
               type: 'REPLACE_WHOLE_STATE',
@@ -84,7 +84,9 @@ const KitProvider: FC = () => {
         <ThemeApp>
           <WaitBackgroundReady loading={undefined}>
             <EngineApp>
-              <NavigationApp />
+              <ErrorBoundary>
+                <NavigationApp />
+              </ErrorBoundary>
             </EngineApp>
           </WaitBackgroundReady>
         </ThemeApp>
