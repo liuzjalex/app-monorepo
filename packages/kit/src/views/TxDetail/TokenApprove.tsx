@@ -10,6 +10,7 @@ import {
 
 import { IDappCallParams } from '../../background/IBackgroundApi';
 
+import Address from './Address';
 import HeaderIcon from './HeaderIcon';
 
 const TokenApprove: FC<{
@@ -32,21 +33,9 @@ const TokenApprove: FC<{
 
       {/* Token Approval Details */}
       <Container.Box mt={6}>
-        <Container.Item
-          title={intl.formatMessage({ id: 'content__from' })}
-          describe={tx.fromAddress}
-        />
-        <Container.Item
-          title={intl.formatMessage({ id: 'content__to' })}
-          describe={tx.toAddress}
-        />
-        {approveAmountInput || (
-          <Container.Item
-            title={intl.formatMessage({ id: 'content__spend_limit_amount' })}
-            hasArrow
-          />
-        )}
-
+        <Address address={tx.fromAddress} isFromAddress />
+        <Address address={tx.toAddress} isFromAddress={false} />
+        {approveAmountInput}
         {!!sourceInfo && (
           <Container.Item
             title={intl.formatMessage({ id: 'content__interact_with' })}

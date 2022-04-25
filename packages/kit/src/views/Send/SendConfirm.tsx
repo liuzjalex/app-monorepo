@@ -217,6 +217,7 @@ const TransactionConfirm = () => {
   }
 
   if (decodedTx.txType === EVMDecodedTxType.TOKEN_APPROVE) {
+    console.log('TxConfirmTokenApprove', sharedProps)
     return <TxConfirmTokenApprove {...sharedProps} />;
   }
 

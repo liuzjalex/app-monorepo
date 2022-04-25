@@ -86,6 +86,7 @@ class EVMTxDecoder {
     rawTx: string | ethers.Transaction,
     engine: Engine,
   ): Promise<EVMDecodedItem> {
+    console.log('EVMTxDecoder', rawTx);
     const { txType, tx, txDesc, protocol } = this.staticDecode(rawTx);
     const itemBuilder = { txType, protocol } as EVMDecodedItem;
 
@@ -117,7 +118,9 @@ class EVMTxDecoder {
         itemBuilder.toAddress,
       );
       if (!token) {
-        throw new Error(`Token ${itemBuilder.toAddress} not found`);
+        throw new Error(
+          `ERC20 Token ${itemBuilder.toAddress} not found on ${networkId}`,
+        );
       }
       switch (txType) {
         case EVMDecodedTxType.TOKEN_TRANSFER: {

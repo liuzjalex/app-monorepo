@@ -9,6 +9,7 @@ import { useIntl } from 'react-intl';
 import {
   Box,
   Center,
+  Container,
   Divider,
   Pressable,
   Spinner,
@@ -83,8 +84,16 @@ function TxConfirmTokenApprove(props: ITxConfirmViewProps) {
       loading={feeInfoLoading}
     />
   );
+
   const approveAmountInput = (
-    <Pressable
+    <Container.Item
+      title={intl.formatMessage({ id: 'form__contract_data' })}
+      describe={
+        isMaxAmount
+          ? intl.formatMessage({ id: 'form__unlimited' })
+          : `${approveAmount} ${decodedTx?.info?.token?.symbol as string}`
+      }
+      hasArrow
       onPress={() => {
         navigation.navigate(SendRoutes.TokenApproveAmountEdit, {
           tokenApproveAmount: approveAmount,
@@ -98,22 +107,7 @@ function TxConfirmTokenApprove(props: ITxConfirmViewProps) {
         // tx.data = '0x095ea7b3000000000000000000000000888888888';
         // onEncodedTxUpdate?.(tx);
       }}
-    >
-      {({ isHovered }) => (
-        <TxTitleDetailView
-          arrow
-          title={intl.formatMessage({
-            id: 'content__spend_limit_amount',
-          })}
-          detail={
-            isMaxAmount
-              ? intl.formatMessage({ id: 'form__unlimited' })
-              : `${approveAmount} ${decodedTx?.info?.token?.symbol as string}`
-          }
-          isHovered={isHovered}
-        />
-      )}
-    </Pressable>
+    />
   );
 
   return (
